@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>STPC</title>
+		<link rel="icon" href="icon/logo.png">
+		<link rel="stylesheet" href="stylesheets/desktop.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	</head>
+	<noscript>
+	</noscript>
+	<body>
+		<audio autoplay>
+			<source src="media/startup.mp3" type="audio/mpeg">
+		</audio>
+		<script>
+			alert("STPC is a website,\ndeveloped by @stxttkx.\nThis is a page that simulates a computer operating system.\nDo not confuse it with any operating system.\nImages and audio resources are from the internet,\nif there is any infringement, please contact me.\nContact information can be found on the \"About\" page of the website.");
+		</script>
+		
+		<!--apps-->
+		<div id="about" CommonApp="T"></div>
+		<div id="taskmgr" CommonApp="T"></div>
+		<div id="settings" CommonApp="T"></div>
+		<div id="calc" class="calc"></div>
+		<div id="browser" CommonApp="T"></div>
+		<div id="explorer" CommonApp="T"></div>
+		<div id="notepad" CommonApp="T"></div>
+		<div id="cmd" CommonApp="T"></div>
+		<div id="liteapps" CommonApp="T"></div>
+		<div id="stmusic" CommonApp="T"></div>
+		<div id="minesweeper" CommonApp="T"></div>
+
+		<!--system-->
+
+		<!--undermenus-->
+        <div id="undermenu" class="unders"></div>
+		<div id="tasks" class="unders"></div>
+		<div id="time" class="unders"></div>
+
+		<!--start menu-->
+		<div id="start-menu" class="menu"></div>
+
+		<!--news-->
+		<div id="news" class="menu"></div>
+
+		<!--weather-->
+		<div id="weather" class="menu"></div>
+
+		<!--time details-->
+		<div id="time-view" class="menu"></div>
+
+		<!--desktop icons-->
+		<button class="desktopicon" onclick="openapp('explorer','thispc')">
+			<img src="icon/thispc.png">
+			<p>This PC</p>
+		</button>
+		<button class="desktopicon" onclick="openapp('explorer','recycle')">
+			<img src="icon/recycle.png">
+			<p>Recycle Bin</p>
+		</button>
+		<button class="desktopicon" onclick="openapp('settings','main')">
+			<img src="icon/settings.png">
+			<p>Settings</p>
+		</button>
+		<button class="desktopicon" onclick="openapp('about','intro')">
+			<img src="icon/about.png">
+			<p>About</p>
+		</button>
+		<button class="desktopicon" ondblclick="openapp('browser','https://www.baidu.com')">
+			<img src="icon/browser.png">
+			<p>Browser</p>
+		</button>
+
+		<!--javascripts-->
+		<script src="script/jq.min.js"></script>
+		<script src="script/getTime.js"></script>
+	</body>
+	<noscript>
+		<style>
+			body {
+				font-size: 20px;
+				text-align: center;
+			}
+		</style>
+		<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+			<p>We are sorry, STPC cannot work properly because JavaScript is disabled!</p>
+		</div>
+	</noscript>
