@@ -32,8 +32,8 @@ STPC 是一个模拟桌面环境的网页应用。
 - `icon/logo.png`: 项目图标。
 - `img/background.png`: 桌面背景图片。
 - `media/startup.mp3`: 启动音效。
-- `stylesheets/desktop.css`: 桌面环境的样式表文件。
-- `jq.min.js`: 实现主要交互功能的函数库。
+- `desktop.css`: 桌面环境的样式表文件。
+- `desktop.js`: 实现主要交互功能的函数库。
 
 ## 使用方法
 
