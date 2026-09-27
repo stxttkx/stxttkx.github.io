@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/220721809"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="> 入门开发者必看：Git 不是命令，是你的“后悔药”和“时光机”
+
+别被`rebase`和`cherry-pick`吓跑，先学会这 5 个命令，你就能搞定 90% 的工作。">
+<meta property="og:title" content="Git 入门">
+<meta property="og:description" content="> 入门开发者必看：Git 不是命令，是你的“后悔药”和“时光机”
+
+别被`rebase`和`cherry-pick`吓跑，先学会这 5 个命令，你就能搞定 90% 的工作。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://stxttkx.github.io/post/Git%20-ru-men.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/220721809">
+<title>Git 入门</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Git 入门</h1>
+<div class="title-right">
+    <a href="https://stxttkx.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/stxttkx/stxttkx.github.io/issues/6" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><blockquote>
+<p>入门开发者必看：Git 不是命令，是你的“后悔药”和“时光机”</p>
+</blockquote>
+<p>别被<code class="notranslate">rebase</code>和<code class="notranslate">cherry-pick</code>吓跑，先学会这 5 个命令，你就能搞定 90% 的工作。</p>
+<h2>前言：一个真实的故事</h2>
+<p>你是不是也有过这样的经历？</p>
+<ul>
+<li>熬夜写了一个新功能，代码跑得挺好。手贱改了一个看似无关的文件，整个项目崩了。</li>
+<li>想回到昨天那个“还能跑”的版本，但 Ctrl+Z 按烂了也回不去。</li>
+<li>或者，你和同事一起改同一个文件，他的代码把你的覆盖了，你三天的工作白费了。</li>
+</ul>
+<p>如果你经历过这些，<strong>Git 就是来救你的</strong>。</p>
+<p>Git 不是代码托管平台（GitHub/GitLab 才是），它是一款<strong>版本管理工具</strong>。通俗点说，它就像电脑里的“时光机”，能让你随时回到任何历史时刻。</p>
+<h2>核心思想：把 Git 想象成“游戏存档”</h2>
+<p>玩过 RPG 游戏吗？打 Boss 前存个档。</p>
+<ul>
+<li>打死了Boss → 继续。</li>
+<li>被Boss打死了 → 读档重来。</li>
+</ul>
+<p><strong>Git 就是代码世界的“存档机制”</strong>。</p>
+<ul>
+<li><strong>存档</strong> = <code class="notranslate">git commit</code>（提交）</li>
+<li><strong>读档</strong> = <code class="notranslate">git checkout</code> 或 <code class="notranslate">git reset</code>（切换/重置）</li>
+<li><strong>多结局路线</strong> = <code class="notranslate">git branch</code>（分支）</li>
+</ul>
+<p>理解了这一点，剩下的就是学怎么按“保存键”。</p>
+<h2>第一次配置：告诉 Git 你是谁</h2>
+<p>安装 Git 后，第一件事是告诉它你的名字，不然它不让你干活。</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">git config --global user.name <span class="pl-s"><span class="pl-pds">"</span>你的名字<span class="pl-pds">"</span></span>
+git config --global user.email <span class="pl-s"><span class="pl-pds">"</span>你的邮箱@example.com<span class="pl-pds">"</span></span></pre></div>
+<h2>最核心的 5 个命令（新手村必学）</h2>
+<p>不要被网上的复杂教程吓到，你<strong>只需要先掌握这 5 个命令</strong>，就能开始日常开发。</p>
+<h3>1. <code class="notranslate">git init</code> —— 初始化，开始“监视”这个文件夹</h3>
+<p>进入你的项目文件夹，输入：</p>
+<pre class="notranslate"><code class="notranslate">git init
+</code></pre>
+<p>此时项目里的每一个文件都会被 Git 盯上。但它<strong>不会自动保存</strong>，需要你手动“通知”它。</p>
+<h3>2. <code class="notranslate">git add</code> —— 把文件放进“暂存区”</h3>
+<p>Git 很严谨，分两步走。</p>
+<ul>
+<li><strong>工作区</strong>：你正在改代码的地方。</li>
+<li><strong>暂存区</strong>：临时存放准备存档文件的地方。</li>
+</ul>
+<p>改完代码后，先把它加到暂存区：</p>
+<pre class="notranslate"><code class="notranslate">git add .        # 添加当前文件夹所有修改
+git add 文件名   # 添加指定文件
+</code></pre>
+<h3>3. <code class="notranslate">git commit</code> —— 正式“存档”</h3>
+<p>这是最重要的存档动作，相当于游戏里的“保存进度”。每次存档必须写注释，说明你做了什么。</p>
+<pre class="notranslate"><code class="notranslate">git commit -m "修复了登录页面的崩溃问题"
+</code></pre>
+<p><strong>✅ 好习惯：</strong></p>
+<p>注释尽量清晰，别只写“修复bug”或“update”。建议格式：</p>
+<p><code class="notranslate">&lt;类型&gt;: &lt;简短描述&gt;</code></p>
+<p>，比如</p>
+<p><code class="notranslate">fix: 修复登录超时跳转错误</code></p>
+<p>。</p>
+<h3>4. <code class="notranslate">git log</code> —— 查看存档历史</h3>
+<p>想看自己存过哪些档？</p>
+<pre class="notranslate"><code class="notranslate">git log --oneline  # 简洁版，只看一行
+</code></pre>
+<p>你会看到一串字符（commit id）和注释，这就是你回到过去的“坐标”。</p>
+<h3>5. <code class="notranslate">git status</code> —— 查看当前状态</h3>
+<p>随时输入这个命令，Git 会告诉你：</p>
+<ul>
+<li>哪些文件修改了没存？</li>
+<li>哪些文件存了但没提交？</li>
+<li>你目前在哪条分支？</li>
+</ul>
+<p><strong>这是个安全命令，随时可以输入，不会破坏任何东西。</strong></p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/6f3b5de4b5a33e375e9ae5c1899314f4c29f31ddebd869d805ef9e43ab893d80/68747470733a2f2f6769742d73636d2e636f6d2f696d616765732f61626f75742f696e646578314032782e706e67"><img src="https://camo.githubusercontent.com/6f3b5de4b5a33e375e9ae5c1899314f4c29f31ddebd869d805ef9e43ab893d80/68747470733a2f2f6769742d73636d2e636f6d2f696d616765732f61626f75742f696e646578314032782e706e67" alt="Git 工作流程图解：工作区、暂存区、本地仓库" data-canonical-src="https://git-scm.com/images/about/index1@2x.png" style="max-width: 100%;"></a></p>
+<p><em>（图片来源：git-scm.com）</em></p>
+<h2>场景实战：用 Git 救自己一次</h2>
+<p>假设你改完 <code class="notranslate">index.html</code> 后，项目崩了。想回退到一小时前的版本：</p>
+<pre class="notranslate"><code class="notranslate"># 1. 先看看历史记录，找到你想回去的那个 commit id
+git log --oneline
+
+# 输出示例：
+# a1b2c3d (HEAD -&gt; main) 修复了登录逻辑
+# e4f5g6h 优化了首页加载速度  &lt;--- 你想回到这个版本
+
+# 2. 回到过去（安全模式，只是看看）
+git checkout e4f5g6h
+
+# 3. 确认没问题后，彻底回到那个版本
+git reset --hard e4f5g6h
+</code></pre>
+<p>搞定。你成功救了自己一命。</p>
+<h2>新手最容易踩的 3 个坑</h2>
+<p><strong>坑 1：只 <code class="notranslate">add</code> 不 <code class="notranslate">commit</code></strong></p>
+<p>改完代码忘了<code class="notranslate">commit</code>就关机了？第二天打开发现昨天的修改没了。</p>
+<p><strong>解决方案：</strong></p>
+<p>养成肌肉记忆，改完一个小功能就<code class="notranslate">commit</code>一次，积攒多个 commit 还能合并。</p>
+<p><strong>坑 2：<code class="notranslate">commit</code> 信息写废话</strong></p>
+<p>例如：</p>
+<pre class="notranslate"><code class="notranslate">git commit -m "123"
+git commit -m "修复"
+</code></pre>
+<p>一个月后你自己都看不懂。</p>
+<p><strong>解决方案：</strong></p>
+<p>写清楚“<strong>为什么</strong>”改和“<strong>怎么</strong>”改。</p>
+<p>好的示例：</p>
+<p><code class="notranslate">fix: 修复用户登录后token过期未刷新导致的白屏问题</code></p>
+<p><strong>坑 3：不敢新建分支</strong></p>
+<blockquote>
+<p>注意<g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+Git的默认分支为<code class="notranslate">master</code>（安装过程中可以修改），但GitHub的默认分支为<code class="notranslate">main</code>（可在设置项中修改）。分支不匹配会导致代码无法同步。</p>
+</blockquote>
+<p>很多人只用<code class="notranslate">main</code>分支，改代码全靠硬覆盖，团队协作时冲突不断。</p>
+<p><strong>解决方案：</strong></p>
+<p>分支很轻量，开一条新分支只需 1 秒：</p>
+<pre class="notranslate"><code class="notranslate">git checkout -b feature/new-login   # 创建并切换到新分支
+</code></pre>
+<p>开发完再</p>
+<pre class="notranslate"><code class="notranslate">git merge
+</code></pre>
+<p>合并回主分支，互不干扰。</p>
+<h2>团队协作：最简远程仓库流程</h2>
+<p>如果你要和别人一起写代码（或备份到 GitHub），只需要这三步：</p>
+<pre class="notranslate"><code class="notranslate"># 1. 克隆别人的项目到本地
+git clone &lt;仓库地址&gt;
+
+# 2. 拉取最新代码
+git pull
+
+# 3. 推送你的提交
+git push
+</code></pre>
+<blockquote>
+<p>小贴士<br>
+你可以在仓库中新建一个单独的分支，作为自己的工作区。</p>
+</blockquote>
+<p><strong>💡 记住：</strong></p>
+<p>先<code class="notranslate">pull</code>再<code class="notranslate">push</code>，否则会冲突。</p>
+<h2>给新手的成长路线图</h2>
+<p>📅 第 1 周：</p>
+<p><code class="notranslate">add</code>·<code class="notranslate">commit</code>·<code class="notranslate">status</code>·<code class="notranslate">log</code></p>
+<p>📅 第 2 周：</p>
+<p><code class="notranslate">branch</code>·<code class="notranslate">checkout</code></p>
+<p>📅 第 3 周：</p>
+<p><code class="notranslate">push</code>·<code class="notranslate">pull</code>·<code class="notranslate">clone</code></p>
+<p>📅 第 3 个月：</p>
+<p><code class="notranslate">rebase</code>·<code class="notranslate">stash</code>·<code class="notranslate">cherry-pick</code></p>
+<h2>结语</h2>
+<p>记住：<strong>Git 是工具，不是考试</strong>。你不需要背下所有命令，只需要知道<strong>版本控制能帮你规避风险</strong>。</p>
+<p>当你某天不小心删了代码，却能优雅地敲下 <code class="notranslate">git reset --hard</code> 把一切都找回来时，你会感谢今天开始学 Git 的自己。</p>
+<p><strong>下一步行动</strong>：打开git bash（Windows系统）或终端（其它系统），输入 <code class="notranslate">git init</code>，开始你的第一次“存档”吧。</p>
+<hr>
+<p>如果你在操作中遇到任何问题，欢迎在评论区留言，我会尽力帮你解决。 💬</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://stxttkx.github.io">普通又神秘的个人博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","stxttkx/stxttkx.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
